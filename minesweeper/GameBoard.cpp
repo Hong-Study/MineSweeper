@@ -51,15 +51,12 @@ void GameBoard::Create_Map()
 	for (int i = 1; i < Map_size-1; ++i) {
 		for (int j = 1; j < Map_size-1; ++j) {
 			if (Maps[i][j].Type == Map::BOMB) {
-				if (Maps[i - 1][j].Type == Map::NOTBOMB) {
-					Maps[i - 1][j+1].count++;
-					Maps[i - 1][j].count++;
-					Maps[i - 1][j-1].count++;
-				}if (Maps[i + 1][j].Type == Map::NOTBOMB) {
-					Maps[i + 1][j + 1].count++;
-					Maps[i + 1][j].count++;
-					Maps[i + 1][j - 1].count++;
-				}
+				Maps[i - 1][j+1].count++;
+				Maps[i - 1][j].count++;
+				Maps[i - 1][j-1].count++;
+				Maps[i + 1][j + 1].count++;
+				Maps[i + 1][j].count++;
+				Maps[i + 1][j - 1].count++;
 				Maps[i][j-1].count++;
 				Maps[i][j+1].count++;
 			}
@@ -84,6 +81,7 @@ void GameBoard::Show_Map()
 		}
 		std::cout << std::endl;
 	}*/
+	int count = 0;
 	for (int i = 0; i < Map_size; ++i) {
 		for (int j = 0; j < Map_size; ++j) {
 			if (i == y && j == x)
@@ -102,11 +100,15 @@ void GameBoard::Show_Map()
 			}
 			else {
 				std::cout << "¡á";
+				if (Maps[i][j].Type == Map::BOMB)
+					count++;
+				else
+					count--;
 			}
 		}
 		std::cout << std::endl;
 	}
-	if (Boom_count == 0) {
+	if (Boom_count == 0 || Boom_count == count) {
 		std::cout << "½Â¸®ÇÏ¼Ì½À´Ï´Ù!" << std::endl;
 		exit(0);
 	}
@@ -150,7 +152,7 @@ void GameBoard::Flag() {
 		Maps[y][x].Type = Map::FLAG;
 		Maps[y][x].Visible = true;
 		Boom_count--;
-	}	
+	}
 }
 void GameBoard::Move_Right()
 {
