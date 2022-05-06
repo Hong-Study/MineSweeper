@@ -1,2 +1,6 @@
 ﻿  GameBoard.cpp
-  minesweeper.vcxproj -> C:\Users\fnvl7\source\repos\minesweeper\x64\Debug\minesweeper.exe
+D:\VisualStudio\minesweeper\minesweeper\GameBoard.cpp(194,18): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\VisualStudio\minesweeper\minesweeper\GameBoard.cpp(209,27): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\VisualStudio\minesweeper\minesweeper\GameBoard.cpp(209,30): warning C4838: 'int'에서 'SHORT'(으)로의 변환에는 축소 변환이 필요합니다.
+D:\VisualStudio\minesweeper\minesweeper\GameBoard.cpp(211,69): warning C4267: '인수': 'size_t'에서 'DWORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  minesweeper.vcxproj -> D:\VisualStudio\minesweeper\x64\Debug\minesweeper.exe

@@ -4,7 +4,7 @@
 
 using namespace std;
 
-MainBoard::MainBoard()
+MainBoard::MainBoard()		// 메인 보드
 {	
 	cout << "\t << M E N U >> \t" << endl; cout << endl;
 	cout << "\t 1. 초급 모드 ( 10 × 10 )\t" << endl; cout << endl;
@@ -34,7 +34,7 @@ MainBoard::MainBoard()
 
 }
 
-void MainBoard::Start()
+void MainBoard::Start()		// 시작
 {
 	int input = 0;
 	while (1) {
@@ -59,8 +59,6 @@ void MainBoard::Start()
 			case Key::F:
 				board->Flag();
 			}
-			system("cls");
-			//std::cout << input;
 			board->Show_Map();
 		}
 	}

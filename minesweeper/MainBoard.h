@@ -2,6 +2,7 @@
 #include <vector>
 #include "Consts.h"
 #include "GameBoard.h"
+
 class MainBoard
 {
 private:

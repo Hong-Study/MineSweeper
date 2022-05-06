@@ -1,12 +1,14 @@
 #include "GameBoard.h"
 #include "Consts.h"
 #include <iostream>
+#include <string>
 GameBoard::GameBoard(int Boom_count, int Map_size)
 	: Boom_count(Boom_count)
 	, Map_size(Map_size)
 {
 	x = 1;
 	y = 1;
+	ScreenInit();
 	Create_Map();
 	Show_Map();
 }
@@ -14,7 +16,7 @@ GameBoard::GameBoard(int Boom_count, int Map_size)
 GameBoard::~GameBoard()
 {
 	std::cout << "GameOver! Bro" << std::endl;
-	system("cls");
+	ScreenRelease();
 }
 
 void GameBoard::Create_Map()
@@ -81,34 +83,8 @@ void GameBoard::Show_Map()
 		}
 		std::cout << std::endl;
 	}*/
-	int count = 0;
-	for (int i = 0; i < Map_size; ++i) {
-		for (int j = 0; j < Map_size; ++j) {
-			if (i == y && j == x)
-				std::cout << "☆";
-			else if (Maps[i][j].Visible) {
-				if (Maps[i][j].Type == Map::NOTBOMB) {
-					if (Maps[i][j].count == 0)
-						std::cout << "  ";
-					else
-						std::cout << Maps[i][j].count << " ";
-				}
-				else if (Maps[i][j].Type == Map::FLAG)
-					std::cout << "◎";
-				else
-					std::cout << "ㅁ";
-			}
-			else {
-				std::cout << "■";
-				if (Maps[i][j].Type == Map::BOMB)
-					count++;
-				else
-					count--;
-			}
-		}
-		std::cout << std::endl;
-	}
-	if (Boom_count == 0 || Boom_count == count) {
+	Render();
+	if (Boom_count == 0) {
 		std::cout << "승리하셨습니다!" << std::endl;
 		exit(0);
 	}
@@ -132,6 +108,7 @@ void GameBoard::RecursiveBackTraing(int in_y, int in_x) {
 		}
 	}
 }
+
 bool GameBoard::inRange(int y, int x)
 {
 	return (y > 0 && y < Map_size - 1) && (x > 0 && x < Map_size - 1);
@@ -189,4 +166,78 @@ void GameBoard::Click() {
 	else if (Maps[y][x].Type == Map::NOTBOMB) {
 		Check(y, x);
 	}
+}
+void GameBoard::ScreenInit()
+{
+	CONSOLE_CURSOR_INFO cci;
+
+	//화면 버퍼 2개를 만든다.
+	g_hScreen[0] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+	g_hScreen[1] = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+
+	//커서를 숨긴다.
+	cci.dwSize = 1;
+	cci.bVisible = FALSE;
+	SetConsoleCursorInfo(g_hScreen[0], &cci);
+	SetConsoleCursorInfo(g_hScreen[1], &cci);
+}
+
+void GameBoard::ScreenFlipping()
+{
+	SetConsoleActiveScreenBuffer(g_hScreen[g_nScreenIndex]);
+	g_nScreenIndex = !g_nScreenIndex;
+}
+
+void GameBoard::ScreenClear()
+{
+	for (int i = 0; i < Map_size; i++) {
+		COORD Coor = { i, 0 };
+		DWORD dw;
+		FillConsoleOutputCharacter(g_hScreen[g_nScreenIndex], ' ', 80 * 25, Coor, &dw);
+	}
+}
+
+void GameBoard::ScreenRelease()
+{
+	CloseHandle(g_hScreen[0]);
+	CloseHandle(g_hScreen[1]);
+}
+
+void GameBoard::ScreenPrint(int x, int y, std::string s)
+{
+	DWORD dw;
+	COORD CursorPosition = { x, y };
+	SetConsoleCursorPosition(g_hScreen[g_nScreenIndex], CursorPosition);
+	WriteFile(g_hScreen[g_nScreenIndex], s.c_str(), s.size(), &dw, NULL);
+}
+
+void GameBoard::Render()
+{
+	ScreenClear();
+	std::string s;
+	for (int i = 0; i < Map_size; ++i) {
+		for (int j = 0; j < Map_size; ++j) {
+			if (i == y && j == x)
+				s += "☆";
+			else if (Maps[i][j].Visible) {
+				if (Maps[i][j].Type == Map::NOTBOMB) {
+					if (Maps[i][j].count == 0)
+						s += " ";
+					else
+						s += std::to_string(Maps[i][j].count);
+						s += " ";
+				}
+				else if (Maps[i][j].Type == Map::FLAG)
+					s += "◎";
+				else
+					s += "ㅁ";
+			}
+			else {
+				s += "■";
+			}
+		}
+		s += "\n";
+	}
+	ScreenPrint(0, 0, s);
+	ScreenFlipping();
 }
