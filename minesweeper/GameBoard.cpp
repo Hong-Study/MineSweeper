@@ -167,7 +167,7 @@ void GameBoard::Click() {
 		Check(y, x);
 	}
 }
-void GameBoard::ScreenInit()
+void GameBoard::ScreenInit()	// 스크린 초기화
 {
 	CONSOLE_CURSOR_INFO cci;
 
@@ -182,13 +182,13 @@ void GameBoard::ScreenInit()
 	SetConsoleCursorInfo(g_hScreen[1], &cci);
 }
 
-void GameBoard::ScreenFlipping()
+void GameBoard::ScreenFlipping()	// 두번째 스크린과 첫번째 스크린 교환
 {
 	SetConsoleActiveScreenBuffer(g_hScreen[g_nScreenIndex]);
 	g_nScreenIndex = !g_nScreenIndex;
 }
 
-void GameBoard::ScreenClear()
+void GameBoard::ScreenClear()	// 사용한 스크린 비우는 함수
 {
 	for (int i = 0; i < Map_size; i++) {
 		COORD Coor = { i, 0 };
@@ -197,13 +197,13 @@ void GameBoard::ScreenClear()
 	}
 }
 
-void GameBoard::ScreenRelease()
+void GameBoard::ScreenRelease()		// 마지막 삭제.
 {
 	CloseHandle(g_hScreen[0]);
 	CloseHandle(g_hScreen[1]);
 }
 
-void GameBoard::ScreenPrint(int x, int y, std::string s)
+void GameBoard::ScreenPrint(int x, int y, std::string s)	// 두번째 스크린에 그림 그리는 함수
 {
 	DWORD dw;
 	COORD CursorPosition = { x, y };
@@ -211,7 +211,7 @@ void GameBoard::ScreenPrint(int x, int y, std::string s)
 	WriteFile(g_hScreen[g_nScreenIndex], s.c_str(), s.size(), &dw, NULL);
 }
 
-void GameBoard::Render()
+void GameBoard::Render()	// 두번째 스크린에 그림 그리기 준비하는 함수
 {
 	ScreenClear();
 	std::string s;
